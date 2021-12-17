@@ -1,0 +1,21 @@
+mode는 파일(F)과 디렉터리(D)를 의미한다.
+
+init_db(): 프로그램에서 단한번으로 모든 경로를 찾아 db에 기록한다.
+
+void add_db(char* row): 아무 조건 없이 row를 그대로 파일에 반영한다.
+
+char* search_db(char* name, char mode): mode에 맞는 row를 선택해 path와 tag를 name과 매칭해 일치하는 것을 전부 찾는다. 나중에 반드시 리턴값을 free해야 한다.
+ex) search_db("test", 'F')는 file_db에서 경로명과 태그중 test와 일치하는 파일을 나타내는 행을 전부 찾는다.   
+ex) search_db("test", 'D')는 file_db에서 test와 일치하는 경로명을 갖는 디렉터리를 전부 찾는다.
+
+char* delete_db(char* file_path, char* deleted_row, char mode): mode를 기준으로 경로를 찾아 mode를 고려하여 삭제 표시를 한 후 원래 row를 deleted_file에 적는다. 
+이때 일치하는 row가 있으면 deleted_row를 리턴하고 일치하는 것이 없을 경우 NULL을 리턴한다.
+
+void add_tag(char* file_path, char* file_tag): 일치하는 파일 경로명에 새로운 태그를 추가한다.(기존 태그와 중복여부를 체크한다.)
+void delete_tag(char* file_path, char* file_tag): 일치하는 파일 경로명에 태그를 삭제한다.
+
+태그의 형식에서 마지막 문자는 F, f, D, d가 존재하며
+F는 해당경로의 파일이 존재한다.
+f는 해당경로이 파일이 삭제되었다.
+D는 해당경로의 폴더가 존재한다.
+d는 해당경로의 파일이 삭제되었다.

@@ -1,20 +1,13 @@
 #include "file_db.h"
 
-FILE* file_open(char* path, char* mode) {
-	fp = fopen(path, mode);
-	if(fp == NULL) {
-		printf("파일 open 실패!");
-		return NULL;
-	}
-	return fp;
-}
-
-void getExt(char* filename, char* extension) {
+void get_ext(char* filename, char* extension) {
     char* ptr = NULL;
     ptr = strrchr(filename, '.');
     
-    if (ptr == NULL)
-        return;
+    if (ptr == NULL) {
+    	strcpy(extension, "\0");
+		return;
+    }
     strcpy(extension, ptr + 1);
 	return;
 }
@@ -32,14 +25,14 @@ char* check_basic_extension(char* extension) {
 		return NULL;
 }
 
-int isFileOrDir() {
+int is_file() {
     if (fd.attrib & _A_SUBDIR)
         return 0;// 디렉터리일 경우 0을 리턴 
     else
         return 1;// 디렉터리가 아닐경우 0을 리턴
 }
 
-void FileSearch(char file_path[]) {
+void file_search(char file_path[]) {
     intptr_t handle;
     int check = 0;
     char file_path2[_MAX_PATH];
@@ -49,7 +42,7 @@ void FileSearch(char file_path[]) {
     strcat(file_path, "*");
  
     if ((handle = _findfirst(file_path, &fd)) == -1) {
-        //printf("No such file or directory\n");
+        printf("No such file or directory\n");
         return;
     }
  
@@ -58,14 +51,31 @@ void FileSearch(char file_path[]) {
         strcpy(file_pt, file_path2);
         strcat(file_pt, fd.name);
  
-        check = isFileOrDir();// 파일인지 디렉토리 인지 식별
+        check = is_file();// 파일인지 디렉토리 인지 식별
  
-        if (check == 0 && fd.name[0] != '.')
-            FileSearch(file_pt);// 하위 디렉토리 검색 재귀함수
+        if (check == 0 && fd.name[0] != '.') {
+        	char time[64];
+        	itoa(fd.time_write, time, 10);
+        	
+        	char size[64];
+        	itoa(fd.size, size, 10);
+        	
+        	char row[max_row_len];
+        	strcpy(row, file_pt);
+        	strcat(row, "|");
+        	strcat(row, "|");
+        	strcat(row, time);
+        	strcat(row, "|");
+        	strcat(row, size);
+        	strcat(row, "|D\n");
+        	fwrite(row, strlen(row), 1, fp);
+        	
+            file_search(file_pt);// 하위 디렉토리 검색 재귀함수
+        }
             
         else if (check == 1 && fd.size != 0 && fd.name[0] != '.') {
         	char extension[_MAX_PATH];
-        	getExt(file_pt, extension);
+        	get_ext(file_pt, extension);
         	
         	char* tag = check_basic_extension(extension);
         	
@@ -87,7 +97,7 @@ void FileSearch(char file_path[]) {
         	strcat(row, time);
         	strcat(row, "|");
         	strcat(row, size);
-        	strcat(row, "|y");
+        	strcat(row, "|F");
         	strcat(row, "\n");
         	fwrite(row, strlen(row), 1, fp);
         	//printf("%s", row);
@@ -100,7 +110,7 @@ void init_db() {
 	fp = file_open(file_db, "w+");
 	if(fp == NULL)
 		return;
-    FileSearch(file_path);
+    file_search(file_path);
     fclose(fp);
     return;
 }
