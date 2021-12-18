@@ -14,7 +14,7 @@ namespace DirectoryWatcher
         void InitWatcher();
     }
     [Guid("EA1BF021-EEBB-4024-A9A9-779AF315575F")]
-    class Watcher : Watcherdll
+    public class Watcher : Watcherdll
     {
         public void InitWatcher() //.cs로 실행하려면 Watcherdll 주석처리, public static Main()으로 바꿔야 함
         {
