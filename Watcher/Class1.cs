@@ -12,6 +12,7 @@ namespace DirectoryWatcher
     public interface Watcherdll //dll에 쓰임
     {
         void InitWatcher();
+        string Send_signal(string signal);
     }
     [Guid("EA1BF021-EEBB-4024-A9A9-779AF315575F")]
     public class Watcher : Watcherdll
@@ -47,27 +48,33 @@ namespace DirectoryWatcher
             }
             string signal = $"Changed{e.FullPath}";
             //Console.WriteLine(signal);
-            Send_signal(signal);
+            Watcher.temp = new Watcher();
+            temp.Send_signal(signal);
         }
         public static void File_Created(object source, FileSystemEventArgs e)
         {
             string signal = $"Created{e.FullPath}";
             //Console.WriteLine(signal);
-            Send_signal(signal);
+            Watcher temp = new Watcher();
+            temp.Send_signal(signal);
         }
         public static void File_Deleted(object source, FileSystemEventArgs e)
         {
             string signal = $"Deleted{e.FullPath}";
             //Console.WriteLine(signal);
-            Send_signal(signal);
+            Watcher temp = new Watcher();
+            temp.Send_signal(signal);
         }
         public static void File_Renamed(object source, RenamedEventArgs e)
         {
             string signal = $"Renamed{e.OldFullPath}||{e.FullPath}";
             //string oldvalue_newvalue = e.OldFullPath+"||"+e.FullPath;
             //Console.WriteLine(oldvalue_newvalue);
-            Send_signal(signal);
+            Watcher temp = new Watcher();
+            temp.Send_signal(signal);
         }
+        //각 static 함수들에서 발생한 이벤트를 FullPath앞에 붙여서 받음. C++에서 if문이나 case로 각 이벤트 구별
+        //C++ 파일에서 .substr(7)로 뒤의 파일경로 얻을 수 있음.
         public static string Send_signal(string signal) //c++에 string 반환
         {
             //Console.WriteLine(signal);
