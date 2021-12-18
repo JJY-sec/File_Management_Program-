@@ -1,10 +1,29 @@
-#include "search_delete_add.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <iostream>
+#import "Watcherdll.tlb" no_namespace named_guids
 
 int main()
 {
-	Watcherdll initWatcher(); //dll ����
-	Watcherdll* temp = NULL;
-	temp->initWatcher()
+	Watcherdll *watch = NULL;
+	Watcherdll *test = NULL; //
+	CoInitialize(NULL); //dll 참조
+
+	HRESULT hr = CoCreateInstance(CLSID_Watcher, NULL, CLSCTX_INPROC_SERVER, IID_Watcherdll, reinterpret_cast<void**>(&watch)); //dll
+	
+	if (SUCCEEDED(hr)) //여기서 dll함수 사용하는 것 같다. 아마 참조 성공
+	{
+		watch->InitWatcher();
+		string s = test->Send_signal(); //아직 여기서 오류뜸
+
+	}
+	else // 참조 실패
+	{
+		CoUninitialize();</void**>;
+	}	
+	//printf(test);
+	//약간 변형해서 사용
 	if (Changed != NULL)
 	{
 		char path[_MAX_PATH] = File_Created();
