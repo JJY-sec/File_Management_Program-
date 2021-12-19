@@ -11,6 +11,7 @@
 #define max_size		15
 #define total_tag_len	100
 #define max_row_len _MAX_PATH + total_tag_len + max_time + max_size
+#define cw 100
 
 struct _finddata_t fd;
 char file_path[_MAX_PATH] = "C:";
